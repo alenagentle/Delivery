@@ -1,0 +1,31 @@
+server:
+  port: ${APP_PORT}
+
+spring:
+  datasource:
+    url: ${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /api/swagger-ui.html
+  api-docs:
+    path: /api/v3/api-docs
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    accessLifetimeMs: ${JWT_ACCESS_LIFETIME}
+    refreshLifetimeMs: ${JWT_REFRESH_LIFETIME}
+    issuer: ${JWT_ISSUER}
