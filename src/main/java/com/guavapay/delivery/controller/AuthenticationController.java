@@ -4,11 +4,9 @@ import com.guavapay.delivery.dto.request.RefreshTokenRequest;
 import com.guavapay.delivery.dto.request.SignUpRequest;
 import com.guavapay.delivery.dto.response.JwtResponse;
 import com.guavapay.delivery.service.api.AuthenticationService;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/authentication")

@@ -1,10 +1,10 @@
 package com.guavapay.delivery.entity;
 
 import com.guavapay.delivery.entity.enums.AuthorityName;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.List;
 
 @Entity
