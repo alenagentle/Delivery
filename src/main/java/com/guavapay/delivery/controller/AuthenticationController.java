@@ -1,5 +1,6 @@
 package com.guavapay.delivery.controller;
 
+import com.guavapay.delivery.dto.request.LoginRequest;
 import com.guavapay.delivery.dto.request.RefreshTokenRequest;
 import com.guavapay.delivery.dto.request.SignUpRequest;
 import com.guavapay.delivery.dto.response.JwtResponse;
@@ -19,6 +20,11 @@ public class AuthenticationController {
     @PostMapping("/sign-up")
     public JwtResponse registerUser(@RequestBody @Valid SignUpRequest request) {
         return authenticationService.registerUser(request);
+    }
+
+    @PostMapping("/sign-in")
+    public JwtResponse authenticateUser(@RequestBody @Valid LoginRequest request) {
+        return authenticationService.login(request);
     }
 
     @PostMapping("/refresh")

@@ -29,34 +29,9 @@ import java.util.List;
 public class SecurityConfig {
 
     private final String[] ignoredUrls = new String[]{
-            "/api/authentication/sign-up",
-            "/api/authentication/sign-in",
-            "/api/authentication/refresh",
-            "/api/swagger-ui/**",
-            "/api/swagger-ui.html",
-            "/api/v3/api-docs/**",
-            "/api/authentication/**",
             "/authentication/**",
-
-
-            "/v2/api-docs",
-            "/configuration/ui",
-            "/swagger-resources/**",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
-
-            "/v2/api-docs",
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
             "/v3/api-docs/**",
-            "/swagger-ui/**",
-
-            "/authenticate",
-
+            "/swagger-ui/**"
     };
 
     private final AuthenticationEntryPointExceptionHandler unauthorizedHandler;
