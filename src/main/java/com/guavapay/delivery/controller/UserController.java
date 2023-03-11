@@ -1,7 +1,9 @@
 package com.guavapay.delivery.controller;
 
+import com.guavapay.delivery.dto.request.ChangePasswordRequest;
 import com.guavapay.delivery.dto.response.UserResponse;
 import com.guavapay.delivery.service.api.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,11 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public UserResponse setCourierRole(@PathVariable String email) {
         return userService.setCourierRole(email);
+    }
+
+    @PostMapping("/password")
+    public void changePassword(@RequestBody @Valid ChangePasswordRequest request) {
+        userService.changePassword(request);
     }
 
 }
