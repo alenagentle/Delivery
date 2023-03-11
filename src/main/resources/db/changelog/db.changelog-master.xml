@@ -11,5 +11,7 @@
     <include file="create-authority.xml" relativeToChangelogFile="true"/>
     <include file="create-role-authority.xml" relativeToChangelogFile="true"/>
     <include file="create-token.xml" relativeToChangelogFile="true"/>
+    <include file="create-product.xml" relativeToChangelogFile="true"/>
+    <include file="add-data-to-role.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
