@@ -1,9 +1,11 @@
 package com.guavapay.delivery.entity;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -31,5 +33,11 @@ public class UserData {
 
     @OneToOne(mappedBy = "userData", cascade = CascadeType.ALL)
     private Token token;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Item> items = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Ordering> orders = new ArrayList<>();
 
 }

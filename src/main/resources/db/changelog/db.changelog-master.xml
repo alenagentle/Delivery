@@ -13,5 +13,7 @@
     <include file="create-token.xml" relativeToChangelogFile="true"/>
     <include file="create-product.xml" relativeToChangelogFile="true"/>
     <include file="add-data-to-role.xml" relativeToChangelogFile="true"/>
+    <include file="create-ordering.xml" relativeToChangelogFile="true"/>
+    <include file="create-item.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

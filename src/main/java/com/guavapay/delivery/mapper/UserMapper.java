@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public abstract class  UserMapper {
+public abstract class UserMapper {
 
     public abstract UserData mapToUser(SignUpRequest signupRequest);
 

@@ -12,7 +12,7 @@
             </column>
             <column name="name" type="VARCHAR(255)"/>
             <column name="amount" type="BIGINT"/>
-            <column name="price" type="NUMERIC(9, 2)"/>
+            <column name="price" type="double"/>
         </createTable>
         <addNotNullConstraint columnName="name"
                               tableName="product"/>

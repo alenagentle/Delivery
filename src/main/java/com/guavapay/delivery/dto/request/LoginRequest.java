@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 public class LoginRequest {
 
-    @NotBlank(message = "{login.not-blank}")
-    @Size(min = 4, max = 320, message = "{login.size}")
+    @NotBlank(message = "{mail.not-blank}")
+    @Size(min = 4, max = 320, message = "{mail.size}")
     private String email;
 
     @NotBlank(message = "{password.not-blank}")
