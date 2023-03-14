@@ -29,7 +29,8 @@ public class RestExceptionHandler {
     @ExceptionHandler({FieldAlreadyTakenException.class,
             IncorrectCredentialsException.class,
             ItemAlreadyTakenException.class,
-            OrderingAlreadyTakenException.class})
+            OrderingAlreadyTakenException.class,
+            DifferentAddressesException.class})
     protected ResponseEntity<ExceptionResponse> handleConflictException(RuntimeException ex) {
         ExceptionResponse response = new ExceptionResponse(ex.getMessage());
         log.error(ex.getMessage());

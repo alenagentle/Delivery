@@ -28,13 +28,15 @@ public abstract class DeliveryMapper {
 
     public abstract DeliveryResponse mapToResponse(Delivery delivery);
 
+    public abstract List<DeliveryResponse> mapToResponses(List<Delivery> deliveryList);
+
     @AfterMapping
     void map(@MappingTarget Delivery delivery, DeliveryRequest deliveryRequest) {
         UserData user = userHelper.findUserById(deliveryRequest.getCourierId());
         delivery.setUser(user);
         List<Ordering> orderingList = orderingHelper.findOrderingsByIds(deliveryRequest.getOrderIds());
         delivery.setOrderings(orderingList);
-        delivery.setDeliveryStatus(DeliveryStatus.STATUS_ACCEPTED);
+        delivery.setDeliveryStatus(DeliveryStatus.STATUS_ASSIGNED);
     }
 
     @AfterMapping
