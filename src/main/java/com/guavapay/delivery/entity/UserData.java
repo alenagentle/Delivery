@@ -40,4 +40,7 @@ public class UserData {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Ordering> orders = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Delivery> deliveries = new ArrayList<>();
+
 }

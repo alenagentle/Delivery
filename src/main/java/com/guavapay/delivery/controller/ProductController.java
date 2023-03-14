@@ -5,6 +5,7 @@ import com.guavapay.delivery.dto.response.ProductResponse;
 import com.guavapay.delivery.service.api.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +16,7 @@ public class ProductController {
 
     private final ProductService productService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ProductResponse createProduct(@RequestBody @Valid ProductRequest request) {
         return productService.createProduct(request);

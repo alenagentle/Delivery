@@ -15,9 +15,13 @@
             <column name="order_status" type="VARCHAR(255)"/>
             <column name="cost" type="double"/>
             <column name="user_id" type="BIGINT"/>
+            <column name="delivery_id" type="BIGINT"/>
         </createTable>
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="ordering"
                                  constraintName="fk_ordering_on_user" referencedColumnNames="id"
                                  referencedTableName="user_data"/>
+        <addForeignKeyConstraint baseColumnNames="delivery_id" baseTableName="ordering"
+                                 constraintName="fk_ordering_on_delivery" referencedColumnNames="id"
+                                 referencedTableName="delivery"/>
     </changeSet>
 </databaseChangeLog>

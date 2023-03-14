@@ -27,6 +27,7 @@ public abstract class ItemMapper {
     @AfterMapping
     protected void map(@MappingTarget ItemResponse response, Item item) {
         response.setProductId(item.getProduct().getId());
+        response.setName(item.getProduct().getName());
         response.setUserId(item.getUser().getId());
     }
 

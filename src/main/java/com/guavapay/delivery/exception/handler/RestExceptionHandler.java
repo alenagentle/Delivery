@@ -28,7 +28,8 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({FieldAlreadyTakenException.class,
             IncorrectCredentialsException.class,
-            ItemAlreadyTakenException.class})
+            ItemAlreadyTakenException.class,
+            OrderingAlreadyTakenException.class})
     protected ResponseEntity<ExceptionResponse> handleConflictException(RuntimeException ex) {
         ExceptionResponse response = new ExceptionResponse(ex.getMessage());
         log.error(ex.getMessage());
@@ -55,6 +56,12 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    protected ResponseEntity<ExceptionResponse> handleRuntimeException(RuntimeException ex) {
+        ExceptionResponse response = new ExceptionResponse(ex.getMessage());
+        log.error(ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(UnvalidatedJwtException.class)
     protected ResponseEntity<ExceptionResponse> handleUnvalidatedJwtException(RuntimeException ex) {
         ExceptionResponse response = new ExceptionResponse(ex.getMessage());
@@ -64,9 +71,8 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     protected ResponseEntity<ExceptionResponse> handleAccessDeniedException(AccessDeniedException ex) {
-        String message = "Forbidden";
-        ExceptionResponse response = new ExceptionResponse(message);
-        log.error(message);
+        ExceptionResponse response = new ExceptionResponse(ex.getMessage());
+        log.error(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 

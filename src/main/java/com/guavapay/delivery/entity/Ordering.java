@@ -24,11 +24,11 @@ public class Ordering {
     private String destination;
 
     @Column(name = "order_date")
-    private Instant orderDate;
+    private Instant orderingDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")
-    private OrderingStatus orderStatus;
+    private OrderingStatus orderingStatus;
 
     @Column(name = "cost")
     private Double cost;
@@ -39,4 +39,8 @@ public class Ordering {
 
     @OneToMany(mappedBy = "ordering", cascade = CascadeType.ALL)
     private List<Item> items = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "delivery_id")
+    private Delivery delivery;
 }

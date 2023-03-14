@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ItemMapper.class})
 public abstract class OrderingMapper {
 
     @Autowired
@@ -30,15 +30,21 @@ public abstract class OrderingMapper {
     public abstract OrderingResponse mapToResponse(Ordering ordering);
 
     @AfterMapping
-    protected void map(@MappingTarget Ordering order, OrderingRequest orderingRequest) {
+    protected void map(@MappingTarget Ordering ordering, OrderingRequest orderingRequest) {
         List<Item> items = itemHelper.findItemsByIds(orderingRequest.getItemIds());
-        order.setItems(items);
+        ordering.setItems(items);
         UserData user = userHelper.getCurrentUserData();
-        order.setUser(user);
+        ordering.setUser(user);
         Date currentDate = new Date();
-        order.setOrderDate(currentDate.toInstant());
-        order.setOrderStatus(OrderingStatus.STATUS_PROCESSED);
-        order.setCost(calculateCost(items));
+        ordering.setOrderingDate(currentDate.toInstant());
+        ordering.setOrderingStatus(OrderingStatus.STATUS_PROCESSED);
+        ordering.setCost(calculateCost(items));
+    }
+
+    @AfterMapping
+    protected void map(@MappingTarget OrderingResponse response, Ordering ordering) {
+        UserData user = userHelper.getCurrentUserData();
+        response.setUserId(user.getId());
     }
 
     private double calculateCost(List<Item> items) {

@@ -24,6 +24,12 @@ public class UserController {
         return userService.findAllUsers();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/couriers")
+    public List<UserResponse> findCouriers() {
+        return userService.findCouriers();
+    }
+
     @PutMapping("/admin/{email}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public UserResponse setCourierRole(@PathVariable String email) {

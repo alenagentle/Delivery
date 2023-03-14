@@ -1,7 +1,6 @@
 package com.guavapay.delivery.helper;
 
 import com.guavapay.delivery.entity.Item;
-import com.guavapay.delivery.exception.ItemAlreadyTakenException;
 import com.guavapay.delivery.exception.NotFoundException;
 import com.guavapay.delivery.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +26,8 @@ public class ItemHelper {
     }
 
     public Item findItemById(Long id) {
-        Item item = itemRepository.findById(id)
+        return itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", id)));
-        if (item.getOrdering() != null)
-            throw new ItemAlreadyTakenException(String.format("Item with id %d is already taken in another ordering", id));
-        return item;
     }
 
 }

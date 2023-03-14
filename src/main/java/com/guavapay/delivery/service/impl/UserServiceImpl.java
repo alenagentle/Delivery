@@ -38,6 +38,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public List<UserResponse> findCouriers() {
+        List<UserData> userDataList = userRepository.findAll();
+        List<UserData> courierList = userDataList.stream()
+                .filter(user -> user.getRoles()
+                        .stream()
+                        .anyMatch(role -> role.getName().equals(RoleName.ROLE_COURIER)))
+                .toList();
+        return userMapper.mapToResponses(courierList);
+    }
+
+    @Override
+    @Transactional
     public UserResponse setCourierRole(String email) {
         UserData user = userHelper.findUserByEmail(email);
         Role role = roleHelper.findRoleByRoleName(RoleName.ROLE_COURIER);

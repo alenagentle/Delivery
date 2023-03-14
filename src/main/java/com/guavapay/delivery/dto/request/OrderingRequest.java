@@ -1,5 +1,6 @@
 package com.guavapay.delivery.dto.request;
 
+import com.guavapay.delivery.config.group.OnCreateGroup;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
@@ -11,8 +12,10 @@ import java.util.List;
 @Setter
 public class OrderingRequest {
 
-    private List<@Positive(message = "{item-id.positive}") Long> ItemIds;
+    @NotBlank(groups = OnCreateGroup.class, message = "{item-id.not-blank}")
+    private List<@Positive(message = "{item-id.positive}") Long> itemIds;
 
     @NotBlank(message = "{destination.not-blank}")
     private String destination;
+
 }
