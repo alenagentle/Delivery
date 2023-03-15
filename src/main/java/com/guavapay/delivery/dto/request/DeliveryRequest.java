@@ -1,18 +1,14 @@
 package com.guavapay.delivery.dto.request;
 
-import jakarta.validation.constraints.Positive;
+import com.guavapay.delivery.entity.enums.DeliveryStatus;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
 public class DeliveryRequest {
 
-    List<@Positive(message = "{ordering-id.positive}") Long> orderIds;
-
-    @Positive(message = "{user-id.positive}")
-    private Long courierId;
+    private DeliveryStatus status;
+    private String mapsUrl;
 
 }

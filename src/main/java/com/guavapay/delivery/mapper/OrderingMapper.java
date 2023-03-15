@@ -29,6 +29,8 @@ public abstract class OrderingMapper {
 
     public abstract OrderingResponse mapToResponse(Ordering ordering);
 
+    public abstract List<OrderingResponse> mapToResponses(List<Ordering> orderings);
+
     @AfterMapping
     protected void map(@MappingTarget Ordering ordering, OrderingRequest orderingRequest) {
         List<Item> items = itemHelper.findItemsByIds(orderingRequest.getItemIds());

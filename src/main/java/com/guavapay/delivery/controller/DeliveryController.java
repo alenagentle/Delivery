@@ -1,8 +1,11 @@
 package com.guavapay.delivery.controller;
 
+import com.guavapay.delivery.dto.request.AssignDeliveryRequest;
 import com.guavapay.delivery.dto.request.DeliveryRequest;
+import com.guavapay.delivery.dto.response.DeliveryFullResponse;
 import com.guavapay.delivery.dto.response.DeliveryResponse;
 import com.guavapay.delivery.service.api.DeliveryService;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +22,13 @@ public class DeliveryController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public DeliveryResponse createDelivery(DeliveryRequest deliveryRequest) {
-        return deliveryService.createDelivery(deliveryRequest);
+    public DeliveryResponse createDelivery(AssignDeliveryRequest assignDeliveryRequest) {
+        return deliveryService.createDelivery(assignDeliveryRequest);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
-    public List<DeliveryResponse> findAllDeliveries() {
+    public List<DeliveryFullResponse> findAllDeliveries() {
         return deliveryService.findAllDeliveries();
     }
 
@@ -38,6 +41,20 @@ public class DeliveryController {
     @GetMapping("/user")
     public List<DeliveryResponse> findAllDeliveriesAssignedToUser() {
         return deliveryService.findAllDeliveriesAssignedToUser();
+    }
+
+    @GetMapping("/{id}")
+    public DeliveryResponse findDeliveryById(@PathVariable
+                                             @Positive Long id) {
+        return deliveryService.findDeliveryById(id);
+    }
+
+    @PreAuthorize("hasRole('ROLE_COURIER') or hasRole('ROLE_ADMIN')")
+    @PutMapping("/{id}")
+    public DeliveryResponse updateDelivery(@PathVariable
+                                           @Positive Long id,
+                                           @RequestBody DeliveryRequest request) {
+        return deliveryService.updateDelivery(id, request);
     }
 
 }

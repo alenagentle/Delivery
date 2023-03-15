@@ -1,4 +1,4 @@
-package com.guavapay.delivery.config;
+package com.guavapay.delivery.config.validation;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -7,7 +7,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @Configuration
-public class ValidationConfig {
+public class ValidationConfiguration {
 
     @Bean
     public MessageSource messageSource() {

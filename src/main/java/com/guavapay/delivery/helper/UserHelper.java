@@ -4,6 +4,7 @@ import com.guavapay.delivery.entity.UserData;
 import com.guavapay.delivery.exception.NotFoundException;
 import com.guavapay.delivery.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,6 +46,12 @@ public class UserHelper {
         UserDetails principal = (UserDetails) authentication.getPrincipal();
         String email = principal.getUsername();
         return findUserByEmail(email);
+    }
+
+    public void checkUserAccess(UserData userData) {
+        UserData currentUser = getCurrentUserData();
+        if (!currentUser.equals(userData))
+            throw new AccessDeniedException(String.format("User with id %d cant get access to this ordering", currentUser.getId()));
     }
 
 }

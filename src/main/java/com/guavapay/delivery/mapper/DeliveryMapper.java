@@ -1,6 +1,7 @@
 package com.guavapay.delivery.mapper;
 
-import com.guavapay.delivery.dto.request.DeliveryRequest;
+import com.guavapay.delivery.dto.request.AssignDeliveryRequest;
+import com.guavapay.delivery.dto.response.DeliveryFullResponse;
 import com.guavapay.delivery.dto.response.DeliveryResponse;
 import com.guavapay.delivery.entity.Delivery;
 import com.guavapay.delivery.entity.Ordering;
@@ -24,23 +25,32 @@ public abstract class DeliveryMapper {
     @Autowired
     private OrderingHelper orderingHelper;
 
-    public abstract Delivery mapToEntity(DeliveryRequest deliveryRequest);
+    public abstract Delivery mapToEntity(AssignDeliveryRequest assignDeliveryRequest);
 
     public abstract DeliveryResponse mapToResponse(Delivery delivery);
 
+    public abstract DeliveryFullResponse mapToFullResponse(Delivery delivery);
+
     public abstract List<DeliveryResponse> mapToResponses(List<Delivery> deliveryList);
 
+    public abstract List<DeliveryFullResponse> mapToFullResponses(List<Delivery> deliveryList);
+
     @AfterMapping
-    void map(@MappingTarget Delivery delivery, DeliveryRequest deliveryRequest) {
-        UserData user = userHelper.findUserById(deliveryRequest.getCourierId());
+    void map(@MappingTarget Delivery delivery, AssignDeliveryRequest assignDeliveryRequest) {
+        UserData user = userHelper.findUserById(assignDeliveryRequest.getCourierId());
         delivery.setUser(user);
-        List<Ordering> orderingList = orderingHelper.findOrderingsByIds(deliveryRequest.getOrderIds());
+        List<Ordering> orderingList = orderingHelper.findOrderingsByIds(assignDeliveryRequest.getOrderIds());
         delivery.setOrderings(orderingList);
         delivery.setDeliveryStatus(DeliveryStatus.STATUS_ASSIGNED);
     }
 
     @AfterMapping
     void map(@MappingTarget DeliveryResponse response, Delivery delivery) {
+        response.setCourierId(delivery.getUser().getId());
+    }
+
+    @AfterMapping
+    void map(@MappingTarget DeliveryFullResponse response, Delivery delivery) {
         response.setCourierId(delivery.getUser().getId());
     }
 

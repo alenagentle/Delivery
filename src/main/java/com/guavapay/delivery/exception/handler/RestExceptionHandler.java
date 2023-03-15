@@ -9,6 +9,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,6 +48,16 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(BindException.class)
+    protected ResponseEntity<ExceptionResponse> handleUnvalidatedJwtException(BindException ex) {
+        String message = ex.getAllErrors().stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+        ExceptionResponse response = new ExceptionResponse(message);
+        log.error(message);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     protected ResponseEntity<ExceptionResponse> handleConstraintViolationException(ConstraintViolationException ex) {
         String message = ex.getConstraintViolations().stream()
@@ -63,6 +74,7 @@ public class RestExceptionHandler {
         log.error(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(UnvalidatedJwtException.class)
     protected ResponseEntity<ExceptionResponse> handleUnvalidatedJwtException(RuntimeException ex) {
         ExceptionResponse response = new ExceptionResponse(ex.getMessage());

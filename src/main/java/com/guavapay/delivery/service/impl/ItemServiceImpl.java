@@ -23,7 +23,6 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemResponse createItem(ItemRequest itemRequest) {
         Item item = itemMapper.mapToEntity(itemRequest);
-
         Item savedItem = itemRepository.save(item);
         log.info("New item saved. Id = {}", savedItem.getId());
         return itemMapper.mapToResponse(savedItem);

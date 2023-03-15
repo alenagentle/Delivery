@@ -19,6 +19,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class OrderingServiceImpl implements OrderingService {
     @Transactional
     public OrderingResponse createOrdering(OrderingRequest orderingRequest) {
         Ordering ordering = orderingMapper.mapToEntity(orderingRequest);
-        ordering.getItems().forEach(item -> checkUserAccess(item.getUser()));
+        ordering.getItems().forEach(item -> userHelper.checkUserAccess(item.getUser()));
         ordering.getItems().forEach(this::checkItem);
         Ordering savedOrdering = orderingRepository.save(ordering);
         ordering.getItems().forEach(item -> item.setOrdering(savedOrdering));
@@ -45,7 +47,7 @@ public class OrderingServiceImpl implements OrderingService {
     @Transactional
     public OrderingResponse updateOrdering(Long id, OrderingRequest orderingRequest) {
         Ordering ordering = orderingHelper.findOrderingById(id);
-        checkUserAccess(ordering.getUser());
+        userHelper.checkUserAccess(ordering.getUser());
         checkAndUpdateFields(ordering, orderingRequest);
         Ordering savedOrdering = orderingRepository.save(ordering);
         log.info("Ordering with id {} updated", id);
@@ -56,7 +58,7 @@ public class OrderingServiceImpl implements OrderingService {
     @Transactional
     public OrderingResponse cancelOrdering(Long id) {
         Ordering ordering = orderingHelper.findOrderingById(id);
-        checkUserAccess(ordering.getUser());
+        userHelper.checkUserAccess(ordering.getUser());
         ordering.setOrderingStatus(OrderingStatus.STATUS_CANCELLED);
         if (ordering.getDelivery() != null)
             ordering.getDelivery().setDeliveryStatus(DeliveryStatus.STATUS_CANCELED);
@@ -65,10 +67,22 @@ public class OrderingServiceImpl implements OrderingService {
         return orderingMapper.mapToResponse(savedOrdering);
     }
 
-    void checkUserAccess(UserData userData) {
+    @Override
+    @Transactional
+    public List<OrderingResponse> findAllOrderings() {
+        List<Ordering> orderings = orderingRepository.findAll();
         UserData currentUser = userHelper.getCurrentUserData();
-        if (!currentUser.equals(userData))
-            throw new AccessDeniedException(String.format("User with id %d cant get access to this ordering", currentUser.getId()));
+        List<Ordering> userOrderingList = orderings.stream()
+                .filter(ordering -> ordering.getUser().equals(currentUser)).toList();
+        return orderingMapper.mapToResponses(userOrderingList);
+    }
+
+    @Override
+    @Transactional
+    public OrderingResponse findOrderingById(Long id) {
+        Ordering ordering = orderingHelper.findOrderingById(id);
+        userHelper.checkUserAccess(ordering.getUser());
+        return orderingMapper.mapToResponse(ordering);
     }
 
     private void checkItem(Item item) {
@@ -77,9 +91,8 @@ public class OrderingServiceImpl implements OrderingService {
     }
 
     private void checkAndUpdateFields(Ordering orderingToUpdate, OrderingRequest request) {
-        Ordering ordering = orderingMapper.mapToEntity(request);
         if (request.getDestination() != null) {
-            orderingToUpdate.setDestination(ordering.getDestination());
+            orderingToUpdate.setDestination(request.getDestination());
         }
     }
 

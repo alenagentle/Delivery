@@ -1,14 +1,18 @@
 package com.guavapay.delivery.service.impl;
 
+import com.guavapay.delivery.dto.request.AssignDeliveryRequest;
 import com.guavapay.delivery.dto.request.DeliveryRequest;
+import com.guavapay.delivery.dto.response.DeliveryFullResponse;
 import com.guavapay.delivery.dto.response.DeliveryResponse;
 import com.guavapay.delivery.entity.Delivery;
 import com.guavapay.delivery.entity.Ordering;
 import com.guavapay.delivery.entity.UserData;
+import com.guavapay.delivery.entity.enums.DeliveryStatus;
 import com.guavapay.delivery.entity.enums.RoleName;
 import com.guavapay.delivery.exception.DifferentAddressesException;
 import com.guavapay.delivery.exception.NotFoundException;
 import com.guavapay.delivery.exception.OrderingAlreadyTakenException;
+import com.guavapay.delivery.helper.DeliveryHelper;
 import com.guavapay.delivery.helper.OrderingHelper;
 import com.guavapay.delivery.helper.UserHelper;
 import com.guavapay.delivery.mapper.DeliveryMapper;
@@ -32,14 +36,15 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryMapper deliveryMapper;
     private final UserHelper userHelper;
     private final OrderingHelper orderingHelper;
+    private final DeliveryHelper deliveryHelper;
 
     @Override
     @Transactional
-    public DeliveryResponse createDelivery(DeliveryRequest deliveryRequest) {
-        checkCourierRole(deliveryRequest.getCourierId());
-        if (deliveryRequest.getOrderIds().size() > 1)
-            checkAddresses(deliveryRequest);
-        Delivery delivery = deliveryMapper.mapToEntity(deliveryRequest);
+    public DeliveryResponse createDelivery(AssignDeliveryRequest assignDeliveryRequest) {
+        checkCourierRole(assignDeliveryRequest.getCourierId());
+        if (assignDeliveryRequest.getOrderIds().size() > 1)
+            checkAddresses(assignDeliveryRequest);
+        Delivery delivery = deliveryMapper.mapToEntity(assignDeliveryRequest);
         delivery.getOrderings().forEach(this::checkOrdering);
         delivery.getOrderings().forEach(ordering -> ordering.setDelivery(delivery));
         Delivery savedDelivery = deliveryRepository.save(delivery);
@@ -49,10 +54,10 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional
-    public List<DeliveryResponse> findAllDeliveries() {
+    public List<DeliveryFullResponse> findAllDeliveries() {
         List<Delivery> deliveries = deliveryRepository.findAll();
         log.info("All deliveries found");
-        return deliveryMapper.mapToResponses(deliveries);
+        return deliveryMapper.mapToFullResponses(deliveries);
     }
 
     @Override
@@ -77,8 +82,44 @@ public class DeliveryServiceImpl implements DeliveryService {
         return deliveryMapper.mapToResponses(usersDeliveryList);
     }
 
-    private void checkAddresses(DeliveryRequest deliveryRequest) {
-        List<Ordering> orderingList = orderingHelper.findOrderingsByIds(deliveryRequest.getOrderIds());
+    @Override
+    @Transactional
+    public DeliveryResponse updateDelivery(Long id, DeliveryRequest request) {
+        Delivery delivery = deliveryHelper.findDeliveryById(id);
+        checkAndUpdateFields(delivery, request);
+        Delivery savedDelivery = deliveryRepository.save(delivery);
+        log.info("Delivery with id {} updated", id);
+        return deliveryMapper.mapToResponse(savedDelivery);
+    }
+
+    @Override
+    @Transactional
+    public DeliveryResponse findDeliveryById(Long id) {
+        Delivery delivery = deliveryHelper.findDeliveryById(id);
+        UserData currentUser = userHelper.getCurrentUserData();
+        delivery.getOrderings().stream()
+                .filter(ordering -> ordering.getUser().equals(currentUser))
+                .findAny()
+                .orElseThrow(() -> new NotFoundException(String.format("Delivery for user with id %d not found",
+                        currentUser.getId())));
+        return deliveryMapper.mapToResponse(delivery);
+    }
+
+    private void checkAndUpdateFields(Delivery deliveryToUpdate, DeliveryRequest request) {
+        if (request.getStatus() != null) {
+            deliveryToUpdate.setDeliveryStatus(request.getStatus());
+        }
+        if (request.getStatus() == DeliveryStatus.STATUS_CANCELED
+                || request.getStatus() == DeliveryStatus.STATUS_DELIVERED) {
+            deliveryToUpdate.setMapsUrl(null);
+        }
+        if (request.getMapsUrl() != null) {
+            deliveryToUpdate.setMapsUrl(request.getMapsUrl());
+        }
+    }
+
+    private void checkAddresses(AssignDeliveryRequest assignDeliveryRequest) {
+        List<Ordering> orderingList = orderingHelper.findOrderingsByIds(assignDeliveryRequest.getOrderIds());
         List<String> destinations = new ArrayList<>();
         orderingList.forEach(ordering -> destinations.add(ordering.getDestination()));
         if (Collections.frequency(destinations, destinations.get(0)) != destinations.size())
