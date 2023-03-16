@@ -49,6 +49,14 @@ public abstract class OrderingMapper {
         response.setUserId(user.getId());
     }
 
+    public void setItemHelper(ItemHelper itemHelper) {
+        this.itemHelper = itemHelper;
+    }
+
+    public void setUserHelper(UserHelper userHelper) {
+        this.userHelper = userHelper;
+    }
+
     private double calculateCost(List<Item> items) {
         double cost = 0.0;
         for (Item item : items) {

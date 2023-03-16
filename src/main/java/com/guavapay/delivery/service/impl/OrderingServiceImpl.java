@@ -15,7 +15,6 @@ import com.guavapay.delivery.repository.OrderingRepository;
 import com.guavapay.delivery.service.api.OrderingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
