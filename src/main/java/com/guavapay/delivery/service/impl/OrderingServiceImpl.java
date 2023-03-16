@@ -13,6 +13,7 @@ import com.guavapay.delivery.helper.UserHelper;
 import com.guavapay.delivery.mapper.OrderingMapper;
 import com.guavapay.delivery.repository.OrderingRepository;
 import com.guavapay.delivery.service.api.OrderingService;
+import com.guavapay.delivery.service.enums.OrderingOperationStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,8 @@ public class OrderingServiceImpl implements OrderingService {
         Ordering ordering = orderingMapper.mapToEntity(orderingRequest);
         ordering.getItems().forEach(item -> userHelper.checkUserAccess(item.getUser()));
         ordering.getItems().forEach(this::checkItem);
+        ordering.getItems().forEach(item -> item.getProduct()
+                .setAmount(getActualProductAmount(item, OrderingOperationStatus.STATUS_CREATE)));
         Ordering savedOrdering = orderingRepository.save(ordering);
         ordering.getItems().forEach(item -> item.setOrdering(savedOrdering));
         log.info("New ordering saved. Id = {}", savedOrdering.getId());
@@ -61,6 +64,8 @@ public class OrderingServiceImpl implements OrderingService {
         ordering.setOrderingStatus(OrderingStatus.STATUS_CANCELLED);
         if (ordering.getDelivery() != null)
             ordering.getDelivery().setDeliveryStatus(DeliveryStatus.STATUS_CANCELED);
+        ordering.getItems().forEach(item -> item.getProduct()
+                .setAmount(getActualProductAmount(item, OrderingOperationStatus.STATUS_CANCEL)));
         Ordering savedOrdering = orderingRepository.save(ordering);
         log.info("Ordering with id {} canceled", id);
         return orderingMapper.mapToResponse(savedOrdering);
@@ -82,6 +87,13 @@ public class OrderingServiceImpl implements OrderingService {
         Ordering ordering = orderingHelper.findOrderingById(id);
         userHelper.checkUserAccess(ordering.getUser());
         return orderingMapper.mapToResponse(ordering);
+    }
+
+    private int getActualProductAmount(Item item, OrderingOperationStatus status) {
+        return switch (status) {
+            case STATUS_CREATE -> item.getProduct().getAmount() - item.getAmount();
+            case STATUS_CANCEL -> item.getProduct().getAmount() + item.getAmount();
+        };
     }
 
     private void checkItem(Item item) {

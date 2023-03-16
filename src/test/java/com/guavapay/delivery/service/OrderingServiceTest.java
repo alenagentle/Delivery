@@ -113,6 +113,7 @@ class OrderingServiceTest {
     private Product buildProduct() {
         Product product = new Product();
         product.setName("pizza");
+        product.setAmount(5);
         product.setPrice(500.0);
         return product;
     }
