@@ -1,26 +1,29 @@
 server:
-  port: ${APP_PORT}
+  port: ${APP_PORT:8080}
 
 spring:
   datasource:
-    url: ${DB_NAME}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: ${DB_NAME:jdbc:postgresql://localhost:5432/delivery}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:123456}
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
-#    show-sql: true
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
 
+logging:
+  file:
+    name: ${LOG_PATH:delivery.log}
+
 app:
   jwt:
-    secret: ${JWT_SECRET}
-    accessLifetimeMs: ${JWT_ACCESS_LIFETIME}
-    refreshLifetimeMs: ${JWT_REFRESH_LIFETIME}
-    issuer: ${JWT_ISSUER}
+    secret: ${JWT_SECRET:cThIIoDvwdueQB468K5xDc5633seEFoqwxjFDxSJyQQcThIIoDvwdueQB468K5xDc5633seEFoqwxjFDxSJyQQ}
+    accessLifetimeMs: ${JWT_ACCESS_LIFETIME:1200000}
+    refreshLifetimeMs: ${JWT_REFRESH_LIFETIME:1200000}
+    issuer: ${JWT_ISSUER:delivery}
