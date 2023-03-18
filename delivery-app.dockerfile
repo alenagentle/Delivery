@@ -1,15 +1,14 @@
-#FROM arm64v8/maven:3.9.0-eclipse-temurin-17 as build
-FROM maven as build
+FROM maven:3.9.0 as build
 WORKDIR /workspace/app
 
 COPY pom.xml .
 COPY src src
 
-RUN mvn install -DskipTests
+RUN mvn install
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 
-FROM khipu/openjdk17-alpine
+FROM openjdk:17
 
 ARG DEPENDENCY=/workspace/app/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
