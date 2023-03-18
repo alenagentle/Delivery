@@ -5,6 +5,11 @@ services:
       dockerfile: delivery-postgres.dockerfile
     container_name: ${PG_CONTAINER_NAME}
     image: 'delivery-db'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - 5434:5432
     environment:
@@ -14,6 +19,25 @@ services:
       PGDATA: ${PGDATA}
     volumes:
       - "postgres-data:/var/lib/postgresql/data"
+  build-app:
+    build:
+      context: .
+      dockerfile: delivery-build-app.dockerfile
+    container_name: ${BUILD_APP_CONTAINER_NAME}
+    image: 'delivery-build-app'
+    healthcheck:
+      test: [ "CMD-SHELL", "test -f /tmp/flag" ]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    environment:
+      DATASOURCE_URL: ${DATASOURCE_URL}
+    volumes:
+      - "app-data:/workspace/app"
+    tty: true
+    depends_on:
+      postgres:
+        condition: service_healthy
   app:
     build:
       context: .
@@ -25,8 +49,13 @@ services:
     environment:
       APP_PORT: ${APP_PORT}
       DATASOURCE_URL: ${DATASOURCE_URL}
+    volumes:
+      - "app-data:/workspace/app"
     depends_on:
-      - postgres
+      build-app:
+        condition: service_healthy
 
 volumes:
   postgres-data:
+  app-data:
+    driver: local

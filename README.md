@@ -45,6 +45,8 @@ psql -d delivery -U postgres -h localhost -p 5434
 INSERT INTO user_role (user_id, role_id) values ((SELECT id FROM user_data WHERE email='admin@mail.ru'), (SELECT id from role WHERE name = 'ROLE_ADMIN'));
 ```
 
+##### Check the rest endpoints with swagger according to user story
+
 ## Credentials for DB connection into docker container
 Username|Password|DB|port
 --------|--------|------|----
