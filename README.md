@@ -28,7 +28,7 @@ curl --location --request POST 'localhost:8080/authentication/sign-up' \
 
 * Simple response with JWT
 ```
-{"accessToken":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMDFAbWFpbC5ydSIsImlzcyI6ImRlbGl2ZXJ5IiwiZXhwIjoxNjc5MTM1NjQ4LCJpYXQiOjE2NzkxMzQ0NDh9.Rlo9hvc0RTwkbQxSixo6vA_bv3i2NBoF8jHbrXzsKYc","refreshToken":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMDFAbWFpbC5ydSIsImlzcyI6ImRlbGl2ZXJ5IiwiZXhwIjoxNjc5MTM1NjQ4LCJpYXQiOjE2NzkxMzQ0NDh9.Rlo9hvc0RTwkbQxSixo6vA_bv3i2NBoF8jHbrXzsKYc"}%
+{"accessToken":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMDFAbWFpbC5ydSIsImlzcyI6ImRlbGl2ZXJ5IiwiZXhwIjoxNjc5MTM1NjQ4LCJpYXQiOjE2NzkxMzQ0NDh9.Rlo9hvc0RTwkbQxSixo6vA_bv3i2NBoF8jHbrXzsKYc","refreshToken":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMDFAbWFpbC5ydSIsImlzcyI6ImRlbGl2ZXJ5IiwiZXhwIjoxNjc5MTM1NjQ4LCJpYXQiOjE2NzkxMzQ0NDh9.Rlo9hvc0RTwkbQxSixo6vA_bv3i2NBoF8jHbrXzsKYc"}
 ```
 
 ## Credentials for DB connection
