@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: ${DB_NAME:jdbc:postgresql://localhost:5432/delivery}
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:123456}
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/delivery}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:123456}
   jpa:
     properties:
       hibernate:
