@@ -109,8 +109,8 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (request.getStatus() != null) {
             deliveryToUpdate.setDeliveryStatus(request.getStatus());
         }
-        if (request.getStatus() == DeliveryStatus.STATUS_CANCELED
-                || request.getStatus() == DeliveryStatus.STATUS_DELIVERED) {
+        if (request.getStatus() != null && (request.getStatus() == DeliveryStatus.STATUS_CANCELED
+                || request.getStatus() == DeliveryStatus.STATUS_DELIVERED)) {
             deliveryToUpdate.setMapsUrl(null);
         }
         if (request.getMapsUrl() != null) {
